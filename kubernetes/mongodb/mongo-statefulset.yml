@@ -1,0 +1,52 @@
+apiVersion: "apps/v1"
+kind: "StatefulSet"
+metadata:
+  name: "mongo-statefull"
+spec:
+  serviceName: "mongo-statefull"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: "mongo-statefull"
+  template:
+    metadata:
+      labels:
+        app: "mongo-statefull"
+    spec:
+      containers:
+        - name: "mongo-statefull"
+          image: mongo:4.4.3
+          imagePullPolicy: "Always"
+          env:
+            - name: "MONGO_INITDB_ROOT_USERNAME"
+              # value: saidsaid
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: USERNAME
+
+            - name: "MONGO_INITDB_ROOT_PASSWORD"
+              # value: saidsaid123
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-secret
+                  key: PASSWORD
+
+          ports:
+            - containerPort: 27017
+              name: "mongodb"
+
+          volumeMounts:
+            - name: "mongodb-persistent-storage"
+              mountPath: "/data/db"
+
+      volumes:
+        - name: "mongodb-persistent-storage"
+          persistentVolumeClaim:
+            claimName: "mongo-pvc"
+        - name: mongo-configmap
+          configMap:
+            name: mongo-configmap
+            items:
+              - key: mongo.conf
+                path: mongo.conf

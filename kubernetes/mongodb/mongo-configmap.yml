@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-configmap
+data:
+  imagePullPolicy: "Always"
+  claimName: "mongo-pvc"
+  hostName: "172.17.0.7"
+  mongo.conf: |
+    storage:
+      dbPath: /data/db
