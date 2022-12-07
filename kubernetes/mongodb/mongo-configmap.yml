@@ -1,3 +1,4 @@
+# Membuat config map untuk mongo dengan nama mongo-configmap
 apiVersion: v1
 kind: ConfigMap
 metadata:

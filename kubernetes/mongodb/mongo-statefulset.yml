@@ -1,30 +1,38 @@
 apiVersion: apps/v1
 kind: StatefulSet
+# Memberikan nama stfs dengan mongodb
 metadata:
   name: mongodb
 spec:
   serviceName: mongo-service
   replicas: 1
   selector:
+    # Mencari pod stfs dengan nama database
     matchLabels:
       app: database
   template:
+    # Membuat pod stfs dengan metadata sebagai berikut
     metadata:
       labels:
         app: database
+        # Mencari pod dengan nama mongodb
         selector: mongodb
     spec:
       containers:
+        # Membuat container dengan image mongo
         - name: mongodb
           image: mongo
           imagePullPolicy: "Never"
+          # Menangkap port sesuai dengan yang diexpose Dockerfile
           ports:
             - containerPort: 27017
+          # Menambahkan beberapa env ke system
           env:
             - name: MONGO_INITDB_ROOT_USERNAME_FILE
               value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
             - name: MONGO_INITDB_ROOT_PASSWORD_FILE
               value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
+          # Meng-mount directory file
           volumeMounts:
             - name: mongo-data
               mountPath: /data/db
@@ -34,6 +42,7 @@ spec:
             - name: mongo-credentials
               mountPath: /etc/mongo-credentials
               readOnly: true
+      # Mendefinisikan mount directory isinya apa saja
       volumes:
         - name: mongo-data
           persistentVolumeClaim:
