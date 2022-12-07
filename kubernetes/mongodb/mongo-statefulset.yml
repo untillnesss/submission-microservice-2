@@ -1,53 +1,56 @@
-apiVersion: "apps/v1"
-kind: "StatefulSet"
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
-  name: "mongo-statefull"
+  name: mongodb
 spec:
-  serviceName: "mongo-statefull"
+  serviceName: mongo-service
   replicas: 1
   selector:
     matchLabels:
-      app: "mongo-statefull"
+      app: database
   template:
     metadata:
       labels:
-        app: "mongo-statefull"
+        app: database
+        selector: mongodb
     spec:
       containers:
-        - name: "mongo-statefull"
+        - name: mongodb
           image: mongo
-          args: ["--dbpath","/data/db"]
           imagePullPolicy: "Never"
-          env:
-            - name: "MONGO_INITDB_ROOT_USERNAME"
-              value: "admin"
-              # valueFrom:
-              #   secretKeyRef:
-              #     name: mongo-secret
-              #     key: USERNAME
-
-            - name: "MONGO_INITDB_ROOT_PASSWORD"
-              value: "admin"
-              # valueFrom:
-              #   secretKeyRef:
-              #     name: mongo-secret
-              #     key: PASSWORD
-
           ports:
             - containerPort: 27017
-              name: "mongodb"
-
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME_FILE
+              value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
+            - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+              value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD
           volumeMounts:
-            - name: "mongodb-persistent-storage"
-              mountPath: "/data/db"
-
+            - name: mongo-data
+              mountPath: /data/db
+            - name: mongo-configmap
+              mountPath: /config
+              readOnly: true
+            - name: mongo-credentials
+              mountPath: /etc/mongo-credentials
+              readOnly: true
       volumes:
-        - name: "mongodb-persistent-storage"
+        - name: mongo-data
           persistentVolumeClaim:
-            claimName: "mongo-pvc"
-        # - name: mongo-configmap
-        #   configMap:
-        #     name: mongo-configmap
-        #     items:
-        #       - key: mongo.conf
-        #         path: mongo.conf
+            claimName: mongo-pvc
+        - name: mongo-configmap
+          configMap:
+            name: mongo-configmap
+            items:
+              - key: mongo.conf
+                path: mongo.conf
+        - name: mongo-credentials
+          secret:
+            secretName: mongo-secret
+            items:
+              - key: MONGO_ROOT_USERNAME
+                path: MONGO_ROOT_USERNAME
+                mode: 0444
+              - key: MONGO_ROOT_PASSWORD
+                path: MONGO_ROOT_PASSWORD
+                mode: 0444

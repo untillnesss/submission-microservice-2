@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: mongo-service
   labels:
-    app: mongo-service
+    app: database
 spec:
-  selector:
-    app: mongo-statefull
   ports:
     - port: 27017
       protocol: TCP
+  selector:
+    app: database
