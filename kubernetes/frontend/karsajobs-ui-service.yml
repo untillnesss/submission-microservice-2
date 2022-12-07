@@ -3,10 +3,13 @@ kind: Service
 metadata:
   labels:
     app: karsajobs-ui-service
+  # Membuat service dengan nama karsajobs-ui-service
   name: karsajobs-ui-service
 spec:
   ports:
+    # Menangkap port dan mengekspos port yang sama dengan Pod
     - port: 8000
+  # Memilih pod dengan nama karsajobs-app
   selector:
     app: karsajobs-ui-app
   type: NodePort

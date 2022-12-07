@@ -1,7 +1,10 @@
+Link repository submission utama
 https://github.com/untillnesss/submission-microservice-2
 
+Link repository file proyek frontend dan backend
 https://github.com/untillnesss/a433-microservices/tree/karsajobs
 https://github.com/untillnesss/a433-microservices/tree/karsajobs-ui
 
+Link image container 
 https://github.com/users/untillnesss/packages/container/package/karsajobs
 https://github.com/users/untillnesss/packages/container/package/karsajobs-ui

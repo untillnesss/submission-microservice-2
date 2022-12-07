@@ -1,18 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  # Membuat deployment dengan nama karsajobs-deployment
   name: karsajobs-deployment
 spec:
   replicas: 1
+  # Mencari pod dengan nama karsajobs-app
   selector:
     matchLabels:
       app: karsajobs-app
   template:
     metadata:
+      # Memberikan nama pod dengan karsajobs-app
       labels:
         app: karsajobs-app
     spec:
       containers:
+        # Membuat container dengan image dari ghcr.io/untillnesss/karsajobs:latest
         - name: karsajobs
           image: ghcr.io/untillnesss/karsajobs:latest
           imagePullPolicy: Always
@@ -21,8 +25,10 @@ spec:
               cpu: 200m
             requests:
               cpu: 100m
+          # Menangkap port sesuai dengan yang diexpose Dockerfile
           ports:
             - containerPort: 8080
+          # Menambahkan beberapa env ke system
           env:
             - name: APP_PORT
               value: "8080"

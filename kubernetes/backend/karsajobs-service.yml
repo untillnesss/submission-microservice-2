@@ -3,10 +3,13 @@ kind: Service
 metadata:
   labels:
     app: karsajobs-service
+  # Membuat service dengan nama karsajobs-service
   name: karsajobs-service
 spec:
   ports:
+    # Menangkap port dan mengekspos port yang sama dengan Pod
     - port: 8080
+  # Memilih pod dengan nama karsajobs-app
   selector:
     app: karsajobs-app
   type: ClusterIP

@@ -1,24 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  # Membuat deployment dengan nama karsajobs-ui-deployment
   name: karsajobs-ui-deployment
   labels:
     app: karsajobs-ui-deployment
 spec:
   replicas: 1
+  # Mencari pod dengan nama karsajobs-ui-app
   selector:
     matchLabels:
       app: karsajobs-ui-app
   template:
     metadata:
+      # Memberikan nama pod dengan karsajobs-ui-app
       labels:
         app: karsajobs-ui-app
     spec:
       containers:
+        # Membuat container dengan image dari ghcr.io/untillnesss/karsajobs-ui:latest
         - name: app
           image: ghcr.io/untillnesss/karsajobs-ui:latest
+          # Menangkap port sesuai dengan yang diexpose Dockerfile
           ports:
             - containerPort: 8000
+          # Menambahkan beberapa env ke system
           env:
             - name: VUE_APP_BACKEND
               value: "http://127.0.0.1:58690"
